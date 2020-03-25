@@ -1,19 +1,33 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
-const Hello = props => {
+const Display = ({counter}) => {
   return (
-    <div>
-      <p>Hello World {props.name}</p>
-    </div>
-  );
-};
+    <div>{counter}</div>
+  )
+}
 
-const App = () => (
-  <React.Fragment>
-    <h1>Greetings</h1>
-    <Hello name="James" />
-  </React.Fragment>
-);
+const Button = ({handleClick, text}) => {
+  return (
+    <button onClick={handleClick}>{text}</button>
+  )
+}
+
+const App = (props) => {
+  //useState returns a pair of values, the current State and a function that updates it
+  const [ counter, setCounter ] = useState(0)
+
+  const increaseByOne = () => setCounter(counter + 1)
+
+  const setToZero = () => setCounter(0)
+
+  return(
+    <div>
+      <Display counter={counter} />
+      <Button handleClick={increaseByOne} text="plus" />
+      <Button handleClick={setToZero} text="reset" />
+    </div>
+  )
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
