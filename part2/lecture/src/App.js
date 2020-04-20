@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios'
 
-const Note = ({ note }) => {
-  return <li>{note.content}</li>;
+const Note = ({ note, toggleImportance }) => {
+  const label = note.important ? 'make not important' : 'make important'
+
+  return (
+    <li>
+      {note.content}
+      <button onClick={toggleImportance}>{label}</button>
+    </li>
+  );
 };
 
 const App = props => {
@@ -48,12 +55,30 @@ const App = props => {
     setNewNote(event.target.value);
   };
 
+  const toggleImportanceOf = (id) => {
+    const url = `http://localhost:3001/notes/${id}`
+    const note = notes.find(n => n.id === id)
+    const changedNote = {...note, important: !note.important}
+
+    axios
+      .put(url, changedNote)
+      .then(response => {
+        console.log(response)
+        setNotes(notes.map(note => note.id !== id ? note : response.data))
+      })
+    
+  }
+
   return (
     <div>
       <h1>Notes</h1>
       <ul>
-        {notesToShow.map(note => (
-          <Note key={note.id} note={note} />
+        {notesToShow.map((note, i) => (
+          <Note 
+            key={i} 
+            note={note} 
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         ))}
       </ul>
 
