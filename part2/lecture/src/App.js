@@ -20,8 +20,6 @@ const App = props => {
 
   useEffect(hook, [])
 
-  console.log('render', notes.length, 'notes');
-
   const notesToShow = showAll
     ? notes
     : notes.filter(note => note.important === true);
@@ -29,16 +27,21 @@ const App = props => {
   const addNote = event => {
     event.preventDefault();
     console.log("button clicked", event.target);
+
+
     const noteObject = {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
-      id: notes.length + 1
     };
 
-    // Concat returns a new array
-    setNotes(notes.concat(noteObject));
-    setNewNote("");
+    axios
+      .post('http://localhost:3001/notes', noteObject)
+      .then(response => {
+        setNotes(notes.concat(response.data))
+        setNewNote('')
+      })
+
   };
 
   const handleNoteChange = event => {
