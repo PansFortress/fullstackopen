@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
+import noteService from './services/notes'
 
 const Note = ({ note, toggleImportance }) => {
   const label = note.important ? 'make not important' : 'make important'
@@ -18,8 +18,8 @@ const App = props => {
   const [showAll, setShowAll] = useState(false);
 
   const hook = () => {
-    axios
-      .get('http://localhost:3001/notes')
+      noteService
+      .getAll()
       .then(response=> {
         setNotes(response.data)
       })
@@ -42,8 +42,8 @@ const App = props => {
       important: Math.random() < 0.5,
     };
 
-    axios
-      .post('http://localhost:3001/notes', noteObject)
+    noteService
+      .create(noteObject)
       .then(response => {
         setNotes(notes.concat(response.data))
         setNewNote('')
@@ -56,12 +56,11 @@ const App = props => {
   };
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`
     const note = notes.find(n => n.id === id)
     const changedNote = {...note, important: !note.important}
 
-    axios
-      .put(url, changedNote)
+    noteService
+      .update(id, changedNote)
       .then(response => {
         console.log(response)
         setNotes(notes.map(note => note.id !== id ? note : response.data))
