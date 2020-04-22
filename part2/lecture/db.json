@@ -35,6 +35,18 @@
       "date": "2020-04-21T07:26:40.356Z",
       "important": false,
       "id": 6
+    },
+    {
+      "content": "testing a new thing",
+      "date": "2020-04-21T07:37:56.834Z",
+      "important": true,
+      "id": 7
+    },
+    {
+      "content": "a new note",
+      "date": "2020-04-21T07:39:27.341Z",
+      "important": false,
+      "id": 8
     }
   ]
 }
