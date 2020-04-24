@@ -68,9 +68,10 @@ const App = () => {
     console.log("Hello");
   }
 
-  const handlePersonClick = event => {
-    event.persist()
-    console.log(event);
+  const handlePersonClick = id => {
+    phoneService
+    .remove(id)
+    .then(setPersons(persons.filter(person => person.id !== id )))
   }
 
   
@@ -123,9 +124,9 @@ const App = () => {
               if(person.name.toLowerCase().includes(newFilter.toLowerCase())){
                 return (
                   <Person 
-                    key={person.name} 
+                    key={person.id} 
                     person={person} 
-                    handleClick={handlePersonClick}/>  
+                    handleClick={() => handlePersonClick(person.id)}/>  
                 )}
                 
               return null;
