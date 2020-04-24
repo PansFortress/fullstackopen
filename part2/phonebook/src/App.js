@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import phoneService from './services/phones'
 
 const Filter = props => {
   return (
@@ -28,9 +29,13 @@ const PersonForm = props => {
 
 const Person = props => {
   const person = props.person;
+  const handleClick = props.handleClick;
 
   return(
-    <li>{person.name} {person.number}</li>
+    <li>
+      {person.name} {person.number} 
+      <button onClick={handleClick}>Test</button>
+    </li>
   )
 }
 
@@ -41,11 +46,11 @@ const App = () => {
   const [newFilter, setFilter] = useState('')
 
   const effect = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    phoneService
+    .getAll()
+    .then(initialPhones => {
+      setPersons(initialPhones)
+    })
   }
   
   useEffect(effect, []);
@@ -61,6 +66,11 @@ const App = () => {
   const handleFilter = event => {
     setFilter(event.target.value)
     console.log("Hello");
+  }
+
+  const handlePersonClick = event => {
+    event.persist()
+    console.log(event);
   }
 
   
@@ -81,7 +91,11 @@ const App = () => {
       return;
     }
 
-    setPersons(persons.concat(newPerson));
+    phoneService
+      .create(newPerson)
+      .then(returnedPhone => {
+        setPersons(persons.concat(returnedPhone))
+      });
     setName('');
     setNumber('');
   }
@@ -108,7 +122,10 @@ const App = () => {
             {
               if(person.name.toLowerCase().includes(newFilter.toLowerCase())){
                 return (
-                  <Person key={person.name} person={person}/>  
+                  <Person 
+                    key={person.name} 
+                    person={person} 
+                    handleClick={handlePersonClick}/>  
                 )}
                 
               return null;
