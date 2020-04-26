@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import phoneService from './services/phones'
+import './index.css'
 
 const Filter = props => {
+  const text = 'filter for names with '
   return (
-    <div>filter for names with 
+    <div>
+      {text} 
       <input value={props.newFilter} 
              onChange={props.handleChange} />
     </div>
@@ -38,11 +41,20 @@ const Person = props => {
   )
 }
 
+const Notification = props => {
+  return (
+    <div className="error">
+      {props.message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setName] = useState('')
   const [newNumber, setNumber] = useState('')
   const [newFilter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState('some error happened')
 
   const effect = () => {
     phoneService
@@ -67,10 +79,13 @@ const App = () => {
     console.log("Hello");
   }
 
-  const handlePersonClick = id => {
+  const handlePersonClick = person => {
     phoneService
-    .remove(id)
-    .then(setPersons(persons.filter(person => person.id !== id )))
+    .remove(person.id)
+    .then(setPersons(persons.filter(p => p.id !== person.id )))
+    .catch(error => {
+      setErrorMessage(`${person.name} was already removed`)
+    })
   }
 
   
@@ -85,7 +100,7 @@ const App = () => {
     
     // Destructure person to only get the name from each object to search on
     if(persons.find(({name}) => name === newName)){
-      alert(`${newName} is already in the phonebook!`);
+      setErrorMessage (`${newName} is already in the phonebook`)
       setName('');
       setNumber('');
       return;
@@ -95,6 +110,7 @@ const App = () => {
       .create(newPerson)
       .then(returnedPhone => {
         setPersons(persons.concat(returnedPhone))
+        setErrorMessage(`${newPerson.name} was added to the phonebook`)
       });
     setName('');
     setNumber('');
@@ -104,6 +120,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <Filter value={newFilter} handleChange={handleFilter}/>
+      <Notification message={errorMessage}/>
       <h2>Add a New Person to the Phonebook</h2>
       
 
@@ -125,7 +142,7 @@ const App = () => {
                   <Person 
                     key={person.id} 
                     person={person} 
-                    handleClick={() => handlePersonClick(person.id)}/>  
+                    handleClick={() => handlePersonClick(person)}/>  
                 )}
                 
               return null;
