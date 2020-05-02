@@ -1,4 +1,6 @@
 const express = require('express')
+const cors = require('cors')
+
 const app = express()
 
 let notes = [
@@ -23,6 +25,7 @@ let notes = [
 ]
 
 app.use(express.json())
+app.use(cors())
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
@@ -72,6 +75,18 @@ app.post('/api/notes', (req, res) => {
 
   notes = notes.concat(note)
   res.json(note)
+})
+
+app.put('/api/notes/:id', (req, res) => {
+  if(req.body && req.body.id){
+    const updatedNote = req.body
+
+    const indexOfNote = notes.find(note => note.id == req.body.id)
+
+    notes[indexOfNote] = updatedNote
+    res.json(updatedNote)
+  }
+  res.status(404).end()
 })
 
 const PORT = 3001
