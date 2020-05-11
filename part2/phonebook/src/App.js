@@ -54,7 +54,7 @@ const App = () => {
   const [newName, setName] = useState('')
   const [newNumber, setNumber] = useState('')
   const [newFilter, setFilter] = useState('')
-  const [errorMessage, setErrorMessage] = useState('some error happened')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const effect = () => {
     phoneService

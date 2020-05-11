@@ -1,8 +1,12 @@
 const express = require ('express')
+const cors = require('cors')
 const app = express()
 
 app.use(express.json())
-const PORT = 3001
+app.use(express.static('build'))
+app.use(cors())
+
+const PORT = process.env.PORT || 3001
 let NOTES = [
   {
     name: "Jason",
